@@ -3,22 +3,15 @@ using UnityEngine;
 
 public static class BallTransformSystem
 {
-    public static void Run(GameObject ball)
+    public static void Run(GameObject ball,float floatIndex)
     {
-        var time = Data.HighlightTime;
-        var activeGame = Data.SequenceData;
-        var ballTransforms = activeGame.BallTransforms; // todo everything is recorded in this 
-        int sequenceLength = Data.SequenceMetaData.TotalSteps;
-        float progress = time / sequenceLength;
-        progress = Math.Min(1, progress);
-        int length = sequenceLength - 1;
-        float stepIndexFloat = progress * length;
-        int step1Index = (int)(stepIndexFloat);
-        int step2Index = Math.Min(length, step1Index + 1);
-        float stepProgress = stepIndexFloat - step1Index;
+    
+        int step1Index = (int)(floatIndex);
+        int step2Index = Math.Min(Data.SequenceMetaData.TotalSteps-1, step1Index + 1);
+        float stepProgress = floatIndex - step1Index;
 
-        var stepTransform = ballTransforms[step1Index];
-        var nextStepTransform = ballTransforms[step2Index];
+        var stepTransform =Data.SequenceData. BallTransforms[step1Index];
+        var nextStepTransform =Data.SequenceData.BallTransforms[step2Index];
 
         var pos1 = stepTransform.Position;
         var pos2 = nextStepTransform.Position;

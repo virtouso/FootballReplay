@@ -1,11 +1,10 @@
 using UnityEngine;
+using System;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject playerPrefab;
-    [SerializeField]
-    private GameObject ballPrefab;
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject ballPrefab;
 
     private GameObject ball;
     private GameObject[] players;
@@ -24,13 +23,27 @@ public class GameManager : MonoBehaviour
         {
             players[i] = Instantiate(playerPrefab);
         }
+
+        Time.timeScale = 4;
     }
 
     private void Update()
     {
         Data.HighlightTime += Time.deltaTime * Data.StepsPerSecond;
-        BallTransformSystem.Run(ball);
-        PlayerTransformSystem.Run(players);
-    }
 
+        var activeGame = Data.SequenceData;
+        var playerTransforms = activeGame.PlayerTransforms;
+
+        var time = Data.HighlightTime;
+
+
+        float progress = time / Data.SequenceMetaData.TotalSteps;
+        progress = Math.Min(1, progress);
+        int length = Data.SequenceMetaData.TotalSteps - 1;
+        float stepIndexFloat = progress * length;
+
+
+        BallTransformSystem.Run(ball,stepIndexFloat);
+        PlayerTransformSystem.Run(players, stepIndexFloat);
+    }
 }

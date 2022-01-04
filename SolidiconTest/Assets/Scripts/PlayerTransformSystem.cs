@@ -3,28 +3,19 @@ using UnityEngine;
 
 public static class PlayerTransformSystem
 {
-    public static void Run(GameObject[] players)
+    public static void Run(GameObject[] players,float floatIndex)
     {
 
-        var activeGame = Data.SequenceData;
-        var playerTransforms = activeGame.PlayerTransforms;
-
-        var time = Data.HighlightTime;
-
-        int sequenceLength = Data.SequenceMetaData.TotalSteps;
-        float progress = time / sequenceLength;
-        progress = Math.Min(1, progress);
-        int length = sequenceLength - 1;
-        float stepIndexFloat = progress * length;
-        int step1Index = (int)(stepIndexFloat);
-        int step2Index = Math.Min(length, step1Index + 1);
-        float stepProgress = stepIndexFloat - step1Index;
+  
+        int step1Index = (int)(floatIndex);
+        int step2Index = Math.Min(Data.SequenceMetaData.TotalSteps-1, step1Index + 1);
+        float stepProgress = floatIndex - step1Index;
 
         for (int i = 0; i < players.Length; i++)
         {
 
-            var transform = playerTransforms.Get(step1Index, i);
-            var transform2 = playerTransforms.Get(step2Index, i);
+            var transform =Data.SequenceData.PlayerTransforms.Get(step1Index, i);
+            var transform2 = Data.SequenceData.PlayerTransforms.Get(step2Index, i);
             var pos1 = transform.Position;
             var pos2 = transform2.Position;
             var dir1 = transform.Direction;
