@@ -3,11 +3,11 @@ using System;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private GameObject ballPrefab;
+    [SerializeField] private PlayerObject playerPrefab;
+    [SerializeField] private BallObject ballPrefab;
 
-    private GameObject ball;
-    private GameObject[] players;
+    private IBallObject ball;
+    private IPlayerObject[] players;
 
     void Start()
     {
@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
         Data.SequenceData = ByteConverter.GetSequenceData(bytes, metaData.TotalSteps);
         Data.SequenceMetaData = metaData;
         ball = Instantiate(ballPrefab);
-        players = new GameObject[Data.TotalPlayers];
+        players = new IPlayerObject[Data.TotalPlayers];
         for (int i = 0; i < players.Length; i++)
         {
             players[i] = Instantiate(playerPrefab);
@@ -45,5 +45,6 @@ public class GameManager : MonoBehaviour
 
         BallTransformSystem.Run(ball,stepIndexFloat);
         PlayerTransformSystem.Run(players, stepIndexFloat);
+        ActionsSystem.Run(ball,players,stepIndexFloat);
     }
 }

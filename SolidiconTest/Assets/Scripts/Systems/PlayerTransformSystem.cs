@@ -3,18 +3,15 @@ using UnityEngine;
 
 public static class PlayerTransformSystem
 {
-    public static void Run(GameObject[] players,float floatIndex)
+    public static void Run(IPlayerObject[] players, float floatIndex)
     {
-
-  
         int step1Index = (int)(floatIndex);
-        int step2Index = Math.Min(Data.SequenceMetaData.TotalSteps-1, step1Index + 1);
+        int step2Index = Math.Min(Data.SequenceMetaData.TotalSteps - 1, step1Index + 1);
         float stepProgress = floatIndex - step1Index;
 
         for (int i = 0; i < players.Length; i++)
         {
-
-            var transform =Data.SequenceData.PlayerTransforms.Get(step1Index, i);
+            var transform = Data.SequenceData.PlayerTransforms.Get(step1Index, i);
             var transform2 = Data.SequenceData.PlayerTransforms.Get(step2Index, i);
             var pos1 = transform.Position;
             var pos2 = transform2.Position;
@@ -26,12 +23,11 @@ public static class PlayerTransformSystem
 
             Vector4 temp = Vector4.Lerp(temp1, temp2, stepProgress);
 
-            Vector3 newPos = new(temp.x, players[i].transform.position.y, temp.y);
+            Vector3 newPos = new(temp.x, players[i].Position.y, temp.y);
             newPos = Vector3.Scale(Data.PlayerScale, newPos);
             Vector3 newDir = new(temp.z, 0, temp.w);
-            players[i].transform.position = newPos;
-            players[i].transform.rotation = Quaternion.LookRotation(newDir);
-
+            players[i].UpdatePosition(newPos);
+            players[i].UpdateRotation(Quaternion.LookRotation(newDir));
         }
     }
 }
