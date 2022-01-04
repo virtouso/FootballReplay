@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < players.Length; i++)
         {
             players[i] = Instantiate(playerPrefab);
+            players[i].Init(i);
         }
 
         Time.timeScale = 4;
@@ -43,8 +44,8 @@ public class GameManager : MonoBehaviour
         float stepIndexFloat = progress * length;
 
 
-        BallTransformSystem.Run(ball,stepIndexFloat);
+        BallTransformSystem.Run(ball, stepIndexFloat);
         PlayerTransformSystem.Run(players, stepIndexFloat);
-        ActionsSystem.Run(ball,players,stepIndexFloat);
+        ActionsSystem.Run(ball, players, stepIndexFloat);
     }
 }

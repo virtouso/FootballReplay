@@ -241,3 +241,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7eff3ee430ffbb438198ea9615a6fb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _shirtMaterial: {fileID: 3270839721652553965}
+  _gameGeneralSettings: {fileID: 11400000, guid: fc412649075405845a16c1224a5ab6da, type: 2}
