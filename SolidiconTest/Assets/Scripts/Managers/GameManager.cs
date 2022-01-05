@@ -1,8 +1,11 @@
 using UnityEngine;
 using System;
+using Zenject;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private ActionsSystem _actionSystem;
+    
     [SerializeField] private PlayerObject playerPrefab;
     [SerializeField] private BallObject ballPrefab;
 
@@ -25,7 +28,8 @@ public class GameManager : MonoBehaviour
             players[i].Init(i);
         }
 
-        Time.timeScale = 4;
+        Time.timeScale = 1;
+        _actionSystem.Init(players);
     }
 
     private void Update()
@@ -33,11 +37,8 @@ public class GameManager : MonoBehaviour
         Data.HighlightTime += Time.deltaTime * Data.StepsPerSecond;
 
         var activeGame = Data.SequenceData;
-        var playerTransforms = activeGame.PlayerTransforms;
-
         var time = Data.HighlightTime;
-
-
+        
         float progress = time / Data.SequenceMetaData.TotalSteps;
         progress = Math.Min(1, progress);
         int length = Data.SequenceMetaData.TotalSteps - 1;
@@ -46,6 +47,6 @@ public class GameManager : MonoBehaviour
 
         BallTransformSystem.Run(ball, stepIndexFloat);
         PlayerTransformSystem.Run(players, stepIndexFloat);
-        ActionsSystem.Run(ball, players, stepIndexFloat);
+      _actionSystem.Run( stepIndexFloat,ball);
     }
 }

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd62f1a7d80cd214a88029209d8cf00d, type: 3}
   m_Name: Game Settings
   m_EditorClassIdentifier: 
-  FirstTeamMaterial: {fileID: 0}
-  SecondTeamMaterial: {fileID: 0}
+  FirstTeamMaterial: {fileID: 2100000, guid: 7de5cc497a7e76544b3d9f7bb00b1c0f, type: 2}
+  SecondTeamMaterial: {fileID: 2100000, guid: d3fb3790a747bef41ab54bd449519ba1, type: 2}

@@ -70,9 +70,8 @@ public struct BallOwner
 
 public struct SequenceData
 {
-    public PlayerTransform[]
-        PlayerTransforms; //1d representation of a 2d array, all player transforms for both teams[numberOfSteps, numberOfPlayers * numberOfTeams]
-
+    //1d representation of a 2d array, all player transforms for both teams[numberOfSteps, numberOfPlayers * numberOfTeams]
+    public PlayerTransform[] PlayerTransforms;
     public BallTransform[] BallTransforms;
     public PlayerActions[] PlayerActions;
     public BallOwner[] BallOwners; //Seems to not always be properly set 

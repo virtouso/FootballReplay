@@ -9,4 +9,5 @@ public class GameGeneralSettings : ScriptableObject
 
     [SerializeField] public Material FirstTeamMaterial;
     [SerializeField] public Material SecondTeamMaterial;
+    [SerializeField] public Material OwnerMaterial;
 }

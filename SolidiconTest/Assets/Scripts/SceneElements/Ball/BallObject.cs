@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BallObject : MonoBehaviour, IBallObject
 {
+    public Vector3 Position => transform.position;
+
     public void UpdatePosition(Vector3 position)
     {
         transform.position = position;
