@@ -28,8 +28,17 @@ public class GameManager : MonoBehaviour
             players[i].Init(i);
         }
 
-        Time.timeScale = 1;
+        Time.timeScale = 3;
         _actionSystem.Init(players);
+
+        // foreach (var item in Data.SequenceData.BallOwners)
+        // {
+        //     print($"{item.BallOwnedPlayer}--{item.BallOwnedTeam}");
+        // }
+
+        Data.SequenceData.BallOwners[0].BallOwnedPlayer = 10;
+        Data.SequenceData.BallOwners[0].BallOwnedTeam = 0;
+
     }
 
     private void Update()

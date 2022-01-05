@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class ActionsSystem : MonoBehaviour
 {
+    [SerializeField] private Arrow _arrow;
     [SerializeField] private GameGeneralSettings _gameGeneralSettings;
     [SerializeField] private Marker _markerPrefab;
     [SerializeField] private int _numberOfFutureRecordsToCheck;
@@ -15,7 +16,7 @@ public class ActionsSystem : MonoBehaviour
     private IMarker _team1Marker;
 
     private IMarker _team2Marker;
-    //  private IMarker _ownerMarker;
+    private IMarker _ownerMarker;
 
     public void Init(IPlayerObject[] allPlayerObjects)
     {
@@ -37,8 +38,8 @@ public class ActionsSystem : MonoBehaviour
         _team2Marker = Instantiate(_markerPrefab);
         _team2Marker.Init(_gameGeneralSettings.SecondTeamMaterial);
 
-        // _ownerMarker = Instantiate(_markerPrefab);
-        // _ownerMarker.Init(_gameGeneralSettings.OwnerMaterial);
+        _ownerMarker = Instantiate(_markerPrefab);
+        _ownerMarker.Init(_gameGeneralSettings.OwnerMaterial);
 
         _currentTeam1ActivePlayer = Data.SequenceData.PlayerActions[0].LeftTeamAction;
         _currentTeam2ActivePlayer = Data.SequenceData.PlayerActions[0].RightTeamAction;
@@ -52,8 +53,9 @@ public class ActionsSystem : MonoBehaviour
 
         SetMarker(_team1Marker, _team1, currentAction.LeftTeamActivePlayerIndex);
         SetMarker(_team2Marker, _team2, currentAction.RightTeamActivePlayerIndex);
-        //  SetOwnerMarker(_ownerMarker, currentIndex);
-        PredictFuturePositionIfChanged(currentIndex, ball.Position);
+        SetOwnerMarker(_ownerMarker, currentIndex);
+        PredictBasedOnOwner(currentIndex, ball.Position);
+    
     }
 
 
@@ -62,19 +64,22 @@ public class ActionsSystem : MonoBehaviour
         marker.SetPosition(teamPlayer[currentIndex].Position + Vector3.up * 5);
     }
 
-    // private void SetOwnerMarker(IMarker marker, int currentIndex)
-    // {
-    //     Debug.Log(Data.SequenceData.BallOwners.Length);
-    //     marker.SetPosition(_allPlayerObjects[Data.SequenceData.BallOwners[currentIndex].BallOwnedPlayer].Position +
-    //                        Vector3.up * 5);
-    // }
+    private void SetOwnerMarker(IMarker marker, int currentIndex)
+    {
+        var currentData = Data.SequenceData.BallOwners[currentIndex];
+        if (currentData.BallOwnedPlayer == -1 || currentData.BallOwnedTeam == -1) return;
+        if (currentData.BallOwnedTeam == 0)
+            marker.SetPosition(_allPlayerObjects[currentData.BallOwnedPlayer].Position + Vector3.up * 10);
+        else
+            marker.SetPosition(_allPlayerObjects[currentData.BallOwnedPlayer + 11].Position + Vector3.up * 10);
+    }
 
 
     private int _currentTeam1ActivePlayer;
-
     private int _currentTeam2ActivePlayer;
 
-// it would be much simple if had ball owner data
+    
+    // didnt work fine so just removed it
     private void PredictFuturePositionIfChanged(int currentRecordIndex, Vector3 ballPosition)
     {
         var currentAction = Data.SequenceData.PlayerActions[currentRecordIndex];
@@ -132,6 +137,31 @@ public class ActionsSystem : MonoBehaviour
             }
         }
     }
+
+    private void PredictBasedOnOwner(int currentIndex, Vector3 ballPosition)
+    {
+        if (currentIndex >= Data.SequenceMetaData.TotalSteps - 2) return;
+        if (Data.SequenceData.BallOwners[currentIndex].BallOwnedPlayer == -1)
+            return;
+        if (Data.SequenceData.BallOwners[currentIndex].BallOwnedPlayer ==
+            Data.SequenceData.BallOwners[currentIndex + 1].BallOwnedPlayer)
+            return;
+
+        for (int i = currentIndex + 1; i < Data.SequenceMetaData.TotalSteps; i++)
+        {
+            if (Data.SequenceData.BallOwners[i].BallOwnedPlayer == -1) continue;
+
+            Debug.DrawLine(ballPosition, Vector3.Scale(Data.PlayerScale,
+                    Data.SequenceData.BallTransforms[i].Position),
+                Color.black, 1);
+
+          _arrow.Show(Vector3.Scale(Data.PlayerScale,
+              Data.SequenceData.BallTransforms[i].Position),ballPosition);
+          
+            break;
+        }
+    }
+
 
     private Vector3 YtoZ(Vector3 input)
     {
