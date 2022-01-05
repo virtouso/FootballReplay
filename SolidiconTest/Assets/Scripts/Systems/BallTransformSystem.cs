@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-public static class BallTransformSystem
+public  class BallTransformSystem :MonoBehaviour
 {
-    public static void Run(IBallObject ball, float floatIndex)
+    public  void Run(IBallObject ball, float floatIndex)
     {
         int step1Index = (int)(floatIndex);
         int step2Index = Math.Min(Data.SequenceMetaData.TotalSteps - 1, step1Index + 1);

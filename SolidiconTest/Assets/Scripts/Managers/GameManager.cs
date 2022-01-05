@@ -4,8 +4,10 @@ using Zenject;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private float _simulationSpeed;
     [SerializeField] private ActionsSystem _actionSystem;
-    
+    [SerializeField] private BallTransformSystem _ballTransformSystem;
+    [SerializeField] private PlayerTransformSystem _playerTransformSystem;
     [SerializeField] private PlayerObject playerPrefab;
     [SerializeField] private BallObject ballPrefab;
 
@@ -28,34 +30,28 @@ public class GameManager : MonoBehaviour
             players[i].Init(i);
         }
 
-        Time.timeScale = 3;
+        Time.timeScale = _simulationSpeed;
         _actionSystem.Init(players);
 
-        // foreach (var item in Data.SequenceData.BallOwners)
-        // {
-        //     print($"{item.BallOwnedPlayer}--{item.BallOwnedTeam}");
-        // }
-
+       //because some data is not recorded properly
         Data.SequenceData.BallOwners[0].BallOwnedPlayer = 10;
         Data.SequenceData.BallOwners[0].BallOwnedTeam = 0;
-
     }
 
     private void Update()
     {
+        //did some refactor to avoid repetitive codes is systems
         Data.HighlightTime += Time.deltaTime * Data.StepsPerSecond;
-
         var activeGame = Data.SequenceData;
         var time = Data.HighlightTime;
-        
         float progress = time / Data.SequenceMetaData.TotalSteps;
         progress = Math.Min(1, progress);
         int length = Data.SequenceMetaData.TotalSteps - 1;
         float stepIndexFloat = progress * length;
 
-
-        BallTransformSystem.Run(ball, stepIndexFloat);
-        PlayerTransformSystem.Run(players, stepIndexFloat);
-      _actionSystem.Run( stepIndexFloat,ball);
+        //systems function
+        _ballTransformSystem.Run(ball, stepIndexFloat);
+        _playerTransformSystem.Run(players, stepIndexFloat);
+        _actionSystem.Run(stepIndexFloat, ball);
     }
 }

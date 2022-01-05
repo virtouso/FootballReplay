@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-public static class PlayerTransformSystem
+public class PlayerTransformSystem : MonoBehaviour
 {
-    public static void Run(IPlayerObject[] players, float floatIndex)
+    public void Run(IPlayerObject[] players, float floatIndex)
     {
         int step1Index = (int)(floatIndex);
         int step2Index = Math.Min(Data.SequenceMetaData.TotalSteps - 1, step1Index + 1);
@@ -13,15 +13,16 @@ public static class PlayerTransformSystem
         {
             var transform = Data.SequenceData.PlayerTransforms.Get(step1Index, i);
             var transform2 = Data.SequenceData.PlayerTransforms.Get(step2Index, i);
-           ConvertRecordToDisplayTransform(players, transform, transform2, stepProgress, i,out var newPos, out var newDir);
-           
+            ConvertRecordToDisplayTransform(players, transform, transform2, stepProgress, i, out var newPos,
+                out var newDir);
+
             players[i].UpdatePosition(newPos);
             players[i].UpdateRotation(Quaternion.LookRotation(newDir));
         }
     }
 
     private static void ConvertRecordToDisplayTransform(IPlayerObject[] players, PlayerTransform transform,
-        PlayerTransform transform2, float stepProgress, int i,out Vector3 newPos, out Vector3 newDir)
+        PlayerTransform transform2, float stepProgress, int i, out Vector3 newPos, out Vector3 newDir)
     {
         var pos1 = transform.Position;
         var pos2 = transform2.Position;
@@ -33,10 +34,9 @@ public static class PlayerTransformSystem
 
         Vector4 temp = Vector4.Lerp(temp1, temp2, stepProgress);
 
-       newPos = new(temp.x, players[i].Position.y, temp.y);
+        newPos = new(temp.x, players[i].Position.y, temp.y);
 
         newPos = Vector3.Scale(Data.PlayerScale, newPos);
         newDir = new(temp.z, 0, temp.w);
-     
     }
 }
